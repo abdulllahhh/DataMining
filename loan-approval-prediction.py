@@ -1,40 +1,40 @@
 
-#Loan Approval Prediction
+# Loan Approval Prediction
 # ## 1. Import Packages & Data
 
-#Import packages
-import pandas as pd
+# Import packages
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import cross_val_score,train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import svm
 import xgboost as xgb
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import auc, accuracy_score, confusion_matrix, mean_squared_error,classification_report
-from sklearn.preprocessing import OneHotEncoder,MinMaxScaler
-#Read data
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler, train_test_split
+# Read data
 df = pd.read_csv("train_u6lujuX_CVtuZ9i (1).csv")
 
-#preview data
+# preview data
 df.head()
 
 
 # ## 2. Data Quality & Missing Value Assesment
-#Preview data information
+# Preview data information
 df.info()
 description = df.describe()
-#Check missing values
+# Check missing values
 df.isnull().sum()
 
 
 # ### Gender - Missing Values
 # percent of missing "Gender" 
-print('Percent of missing "Gender" records is %.2f%%' %((df['Gender'].isnull().sum()/df.shape[0])*100))
+print('Percent of missing "Gender" records is %.2f%%' % ((df['Gender'].isnull().sum() / df.shape[0])*100))
 # %s specifically is used to perform concatenation of strings together.
 print("Number of people who take a loan group by gender :")
 print(df['Gender'].value_counts())
@@ -189,32 +189,38 @@ train_data.info()
 train_data.isnull().sum()
 data_description_after_preprocessing = train_data.describe()
 
-#######data is clean and pre processed#########
+# ######data is clean and pre processed#########
 
-#split data
-x = train_data.iloc[:,1:12]
-y = train_data.iloc[:,12]
+# split data
+x = train_data.iloc[:, 1:12]
+y = train_data.iloc[:, 12]
 
 X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random_state=1234)
 
+# 4.Making Prediction
 
-
-# ## 4. Making Prediction
-
-#Separate feature and target
+# Separate feature and target
+# models and it`s evaluation
+scores = []
+classifier = ('Gradient Boosting' , 'Random Forest' ,'Decision Tree' , 'K-Nearest Neighbor' , 'SVM' ,'XGBoost','LogisticRegression')
+y_pos = np.arange(len(classifier))
 #GradientBoostingClassifier
 GBC = GradientBoostingClassifier()
 GBC.fit(X_train, y_train)
 expected_y  = y_test
 predicted_y = GBC.predict(X_test)
-print('The accuration of classification is %.2f%%' %(accuracy_score(expected_y, predicted_y)*100))
+GBC_accuracy_score = accuracy_score(expected_y, predicted_y)*100
+scores.append(GBC_accuracy_score)
+print('The accuration of classification is %.2f%%' % (GBC_accuracy_score))
 
 #RandomForestClassifier
 RFC = RandomForestClassifier(n_estimators=10)
 RFC.fit(X_train, y_train)
 expected_y  = y_test
 predicted_y = RFC.predict(X_test)
-print('The accuration of classification is %.2f%%' %(accuracy_score(expected_y, predicted_y)*100))
+RFC_accuracy_score = accuracy_score(expected_y, predicted_y)*100
+scores.append(RFC_accuracy_score)
+print('The accuration of classification is %.2f%%' %(RFC_accuracy_score))
 
 
 #DecisionTreeClassifier
@@ -222,6 +228,8 @@ DTC = DecisionTreeClassifier()
 DTC.fit(X_train, y_train)
 expected_y  = y_test
 predicted_y = DTC.predict(X_test)
+DTC_accuracy_score = accuracy_score(expected_y, predicted_y)*100
+scores.append(DTC_accuracy_score)
 print('The accuration of classification is %.2f%%' %(accuracy_score(expected_y, predicted_y)*100))
 
 
@@ -230,7 +238,9 @@ KNN = KNeighborsClassifier()
 KNN.fit(X_train, y_train)
 expected_y  = y_test
 predicted_y = KNN.predict(X_test)
-print('The accuration of classification is %.2f%%' %(accuracy_score(expected_y, predicted_y)*100))
+KNN_accuracy_score = accuracy_score(expected_y, predicted_y)*100
+scores.append(KNN_accuracy_score)
+print('The accuration of classification is %.2f%%' %(KNN_accuracy_score))
 
 
 
@@ -239,24 +249,30 @@ SVM = svm.LinearSVC(max_iter=5000)
 SVM.fit(X_train, y_train)
 expected_y  = y_test
 predicted_y = SVM.predict(X_test)
-print('The accuration of classification is %.2f%%' %(accuracy_score(expected_y, predicted_y)*100))
+SVM_accuracy_score = accuracy_score(expected_y, predicted_y)*100
+scores.append(SVM_accuracy_score)
+print('The accuration of classification is %.2f%%' %(SVM_accuracy_score))
 
 
 #XGBClassifier
-model = xgb.XGBClassifier()
-model.fit(X_train, y_train)
+XGB = xgb.XGBClassifier()
+XGB.fit(X_train, y_train)
 expected_y  = y_test
-predicted_y = model.predict(X_test)
-print('The accuration of classification is %.2f%%' %(accuracy_score(expected_y, predicted_y)*100))
+predicted_y = XGB.predict(X_test)
+XGB_accuracy_score = accuracy_score(expected_y, predicted_y)*100
+scores.append(XGB_accuracy_score)
+print('The accuration of classification is %.2f%%' %(XGB_accuracy_score))
 
 
 
 #LogisticRegression
-model = LogisticRegression()
-model.fit(X_train, y_train)
+LR = LogisticRegression()
+LR.fit(X_train, y_train)
 expected_y  = y_test
-predicted_y = model.predict(X_test)
-print('The accuration of classification is %.2f%%' %(accuracy_score(expected_y, predicted_y)*100))
+predicted_y = LR.predict(X_test)
+LR_accuracy_score = accuracy_score(expected_y, predicted_y)*100
+scores.append(LR_accuracy_score)
+print('The accuration of classification is %.2f%%' %(LR_accuracy_score))
 
 
 
@@ -267,7 +283,7 @@ print('The accuration of classification is %.2f%%' %(accuracy_score(expected_y, 
 # The result is Gradient Boosting Classifier have the highest score from other classification algorithm. These result are similar to my previous works.
 
 
-plt.barh(y_pos, score, align='center', alpha=0.5)
+plt.barh(y_pos, scores, align='center', alpha=0.5)
 plt.yticks(y_pos, classifier)
 plt.xlabel('Score')
 plt.title('Classification Performance')
