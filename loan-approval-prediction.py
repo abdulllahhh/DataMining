@@ -16,7 +16,7 @@ import xgboost as xgb
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler, train_test_split
+from sklearn.preprocessing import MinMaxScaler
 # Read data
 df = pd.read_csv("train_u6lujuX_CVtuZ9i (1).csv")
 
@@ -166,7 +166,7 @@ train_data['Property_Area'] = train_data['Property_Area'].replace(property_stat)
 
 #scale numirical data 
 sns.countplot(x='Loan_Amount_Term',data=df,palette='Set3')
-"""loan amount term is numerical data not folloing the normal distribution """
+"""loan amount term is numerical data not following the normal distribution """
 #minimax scaler
 #for numiric
 min_max_scaler = MinMaxScaler()
